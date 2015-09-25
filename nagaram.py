@@ -17,9 +17,9 @@ def to_alphaset(word):
 
 def main():
     anagram_dict = defaultdict(list)
-    words_file = open("/usr/share/dict/words", "r")
-    for word in words_file.readlines():
-        fixed_word = word.rstrip().lower()
+    word_list = open("/usr/share/dict/words", "r").read().split("\n")
+    for word in word_list:
+        fixed_word = word.lower()
         anagram_dict[to_alphaset(fixed_word)].append(fixed_word)
     possible = anagram_dict.get(to_alphaset(word_to_anagram), [])
     sorted_gram = sorted(word_to_anagram)
