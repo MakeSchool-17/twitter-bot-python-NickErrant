@@ -1,6 +1,6 @@
 import sys
 import string
-from collections import defaultdict
+from collections import defaultdict, deque
 
 word_to_anagram = sys.argv[1].lower()
 
@@ -16,7 +16,7 @@ def to_alphaset(word):
 
 
 def main():
-    anagram_dict = defaultdict(list)
+    anagram_dict = defaultdict(deque)
     word_list = open("/usr/share/dict/words", "r").read().split("\n")
     for word in word_list:
         fixed_word = word.lower()
