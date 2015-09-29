@@ -1,30 +1,70 @@
-import sys
-import string
-from collections import defaultdict
+class Anagram_Dict():
 
-word_to_anagram = sys.argv[1].lower()
+    def __init__(self, dict_file):
+        self.index = 0
+        self.search_list = [None, None]
+        # alphabet ordered by frequency in english
+        self._alphabet = ["z", "j", "q", "x", "k", "v", "b", "p", "g", "w",
+                          "y", "f", "m", "c", "u", "l", "d", "h", "r", "s",
+                          "n", "i", "o", "a", "t", "e"]
+        self._binmap = {letter: 1 << i
+                        for (i, letter)
+                        in enumerate(self._alphabet)}
+        with open(dict_file, "r") as corpus:
+            self.words = corpus.read().split()
+        for word in self.words:
+            self.add(word.lower())
 
-alphabet = string.ascii_lowercase
-binmap = {letter: 1 << index for (index, letter) in enumerate(alphabet)}
+    def _to_bitset_key(self, word):
+        bit_set = 0
+        for char in word:
+            bit_set |= self._binmap.get(char, 0)
+        return bit_set
 
+    def add(self, word):
+        compact = self._to_bitset_key(word)
+        current = self.search_list
+        letter_index = 1 << 25
+        while compact & (letter_index - 1) != 0:
+            direction = 1 if letter_index & compact != 0 else 0
+            if not current[direction]:
+                current[direction] = [None, None]
+            current = current[direction]
+            letter_index >>= 1
+        if len(current) == 2:
+            current.append([self.index])
+        else:
+            current[2].append(self.index)
+        self.index += 1
 
-def to_alphaset(word):
-    start = 0
-    for char in word:
-        start |= binmap.get(char, 0)
-    return start
+    def _get_bucket(self, word):
+        if word == "":
+            return []
+        compact = self._to_bitset_key(word)
+        current = self.search_list
+        letter_index = 1 << 25
+        while compact & (letter_index - 1) != 0:
+            direction = 1 if letter_index & compact != 0 else 0
+            if not current[direction]:
+                return []
+            current = current[direction]
+            letter_index >>= 1
+        return current[2]
+
+    def get_anagrams(self, word):
+        possible = []
+        for index in self._get_bucket(word.lower()):
+            possible.append(self.words[index])
+        sorted_word = sorted(word.lower())
+        return [x for x in possible if sorted(x.lower()) == sorted_word]
 
 
 def main():
-    anagram_dict = defaultdict(list)
-    word_list = open("/usr/share/dict/words", "r").read().split("\n")
-    for word in word_list:
-        fixed_word = word.lower()
-        anagram_dict[to_alphaset(fixed_word)].append(fixed_word)
-    possible = anagram_dict.get(to_alphaset(word_to_anagram), [])
-    sorted_gram = sorted(word_to_anagram)
-    anagrams = [word for word in possible if sorted(word) == sorted_gram]
-    print("\n".join(anagrams))
+    a = Anagram_Dict("/usr/share/dict/words")
+    print(a.get_anagrams(""))
+    print(a.get_anagrams("a"))
+    print(a.get_anagrams("huyhjkjg"))
+    print(a.get_anagrams("orb"))
 
 
 if __name__ == '__main__':
