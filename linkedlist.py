@@ -35,18 +35,10 @@ class SortedLinkedList:
         return self._find(key) is not None
 
     def __iter__(self):
-        self._curr_node = self.head.next_node
-        return self
+        return self.iterator()
 
     def __len__(self):
         return self.count
-
-    def __next__(self):
-        current = self._curr_node
-        if not current:
-            raise StopIteration
-        self._curr_node = current.next_node
-        return current
 
     def __str__(self):
         return "["+", ".join(str(node) for node in self)+"]"
@@ -87,6 +79,12 @@ class SortedLinkedList:
             return
         prev.next_node = current.clear()
         self.count -= 1
+
+    def iterator(self):
+        current = self.head.next_node
+        while current:
+            yield current
+            current = current.next_node
 
 
 class HistogramWithList(SortedLinkedList):
