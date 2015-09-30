@@ -1,4 +1,4 @@
-class Node():
+class Node:
     def __init__(self, data=None, next_node=None):
         self.data = data
         self.next_node = next_node
@@ -21,7 +21,7 @@ class AssocNode(Node):
         return str((self.data, self.value))
 
 
-class SortedLinkedList():
+class SortedLinkedList:
     def __init__(self, iterable=None, node_type=Node):
         self.node_type = node_type
         # sentinel node
