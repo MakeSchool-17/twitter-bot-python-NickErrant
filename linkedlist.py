@@ -9,7 +9,7 @@ class Node:
         return link
 
     def __str__(self):
-        return str(self.data)
+        return repr(self.data)
 
 
 class AssocNode(Node):
@@ -18,7 +18,7 @@ class AssocNode(Node):
         self.value = value
 
     def __str__(self):
-        return str((self.data, self.value))
+        return repr((self.data, self.value))
 
 
 class SortedLinkedList:

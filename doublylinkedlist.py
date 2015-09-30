@@ -5,7 +5,7 @@ class DoubleNode:
         self.next_node = next_node
 
     def __str__(self):
-        return str(self.data)
+        return repr(self.data)
 
 
 class DoubleAssocNode(DoubleNode):
@@ -14,7 +14,7 @@ class DoubleAssocNode(DoubleNode):
         self.value = value
 
     def __str__(self):
-        return str((self.data, self.value))
+        return repr((self.data, self.value))
 
 
 class DoublyLinkedList:
