@@ -33,30 +33,30 @@ class DoublyLinkedList:
             for item in iterable:
                 self.append(item)
 
-    def __iter__(self):
-        return self.forward_iterator()
-
-    def __str__(self):
-        return "["+", ".join(str(node) for node in self)+"]"
-
-    def __len__(self):
-        return self.count
-
     def __contains__(self, key):
         return self._find(key) is not None
 
-    def _insert_before(self, node, new_node):
-        new_node.prev_node = node.prev_node
-        new_node.next_node = node
-        node.prev_node.next_node = new_node
-        node.prev_node = new_node
-        self.count += 1
+    def __iter__(self):
+        return self.forward_iterator()
+
+    def __len__(self):
+            return self.count
+
+    def __str__(self):
+        return "["+", ".join(str(node) for node in self)+"]"
 
     def _insert_after(self, node, new_node):
         new_node.next_node = node.next_node
         new_node.prev_node = node
         node.next_node.prev_node = new_node
         node.next_node = new_node
+        self.count += 1
+
+    def _insert_before(self, node, new_node):
+        new_node.prev_node = node.prev_node
+        new_node.next_node = node
+        node.prev_node.next_node = new_node
+        node.prev_node = new_node
         self.count += 1
 
     def _find(self, key):

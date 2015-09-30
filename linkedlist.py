@@ -3,13 +3,13 @@ class Node:
         self.data = data
         self.next_node = next_node
 
+    def __str__(self):
+        return repr(self.data)
+
     def clear(self):
         link = self.next_node
         self.next_node = None
         return link
-
-    def __str__(self):
-        return repr(self.data)
 
 
 class AssocNode(Node):
@@ -31,9 +31,25 @@ class SortedLinkedList:
             for item in iterable:
                 self.add(item)
 
-    def _insert(self, prev_node, new_node):
-        new_node.next_node = prev_node.next_node
-        prev_node.next_node = new_node
+    def __contains__(self, key):
+        return self._find(key) is not None
+
+    def __iter__(self):
+        self._curr_node = self.head.next_node
+        return self
+
+    def __len__(self):
+        return self.count
+
+    def __next__(self):
+        current = self._curr_node
+        if not current:
+            raise StopIteration
+        self._curr_node = current.next_node
+        return current
+
+    def __str__(self):
+        return "["+", ".join(str(node) for node in self)+"]"
 
     def _find(self, item):
         current = self.head.next_node
@@ -41,6 +57,10 @@ class SortedLinkedList:
             if current.data == item:
                 return current
             current = current.next_node
+
+    def _insert(self, prev_node, new_node):
+        new_node.next_node = prev_node.next_node
+        prev_node.next_node = new_node
 
     def add(self, item):
         new_node = self.node_type(item)
@@ -54,6 +74,7 @@ class SortedLinkedList:
         self._insert(prev, new_node)
         self.count += 1
 
+    # only removes first item found
     def remove(self, item):
         current = self.head
         prev = current
@@ -66,26 +87,6 @@ class SortedLinkedList:
             return
         prev.next_node = current.clear()
         self.count -= 1
-
-    def __iter__(self):
-        self._curr_node = self.head.next_node
-        return self
-
-    def __next__(self):
-        current = self._curr_node
-        if not current:
-            raise StopIteration
-        self._curr_node = current.next_node
-        return current
-
-    def __str__(self):
-        return "["+", ".join(str(node) for node in self)+"]"
-
-    def __len__(self):
-        return self.count
-
-    def __contains__(self, key):
-        return self._find(key) is not None
 
 
 class HistogramWithList(SortedLinkedList):
