@@ -8,6 +8,15 @@ class DoubleNode:
         return str(self.data)
 
 
+class DoubleAssocNode(DoubleNode):
+    def __init__(self, data=None, value=1, prev_node=None, next_node=None):
+        super().__init__(data, prev_node, next_node)
+        self.value = value
+
+    def __str__(self):
+        return str((self.data, self.value))
+
+
 class DoublyLinkedList:
     def __init__(self, iterable=None, node_type=DoubleNode):
         self.node_type = node_type
@@ -60,6 +69,8 @@ class DoublyLinkedList:
     def _remove_node(self, node):
         node.prev_node.next_node = node.next_node
         node.next_node.prev_node = node.prev_node
+        node.next_node = None
+        node.prev_node = None
         self.count -= 1
 
     def append(self, item):
@@ -87,6 +98,34 @@ class DoublyLinkedList:
         while current != self.head:
             yield current
             current = current.prev_node
+
+
+class HistogramWithDLL(DoublyLinkedList):
+    def __init__(self, iterable=None):
+        super().__init__(None, DoubleAssocNode)
+        if iterable:
+            for item in iterable:
+                self.add(item)
+
+    def add(self, item):
+        node = self._find(item)
+        if node:
+            node.value += 1
+        else:
+            super().append(item)
+
+    def frequency(self, item):
+        node = self._find(item)
+        if node:
+            return node.value
+        return 0
+
+    def subtract(self, item):
+        node = self._find(item)
+        if node:
+            node.value -= 1
+            if node.value < 1:
+                self._remove_node(node)
 
 
 def main():
