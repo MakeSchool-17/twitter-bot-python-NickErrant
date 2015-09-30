@@ -23,9 +23,10 @@ class AssocNode(Node):
 
 class SortedLinkedList():
     def __init__(self, iterable=None, node_type=Node):
-        self.head = None
-        self.count = 0
         self.node_type = node_type
+        # sentinel node
+        self.head = node_type()
+        self.count = 0
         if iterable:
             for item in iterable:
                 self.add(item)
@@ -35,48 +36,39 @@ class SortedLinkedList():
         prev_node.next_node = new_node
 
     def _find(self, item):
-        current = self.head
+        current = self.head.next_node
         while current:
             if current.data == item:
                 return current
             current = current.next_node
 
     def add(self, item):
-        self.count += 1
         new_node = self.node_type(item)
         current = self.head
-        if (not current) or new_node.data < current.data:
-            new_node.next_node = current
-            self.head = new_node
-            return
-        last = current
+        prev = current
         while current.next_node:
             current = current.next_node
             if new_node.data <= current.data:
                 break
-            last = current
-        self._insert(last, new_node)
+            prev = current
+        self._insert(prev, new_node)
+        self.count += 1
 
     def remove(self, item):
         current = self.head
-        if current.data == item:
-            self.head = current.next_node
-            del current
-            self.count -= 1
-            return
-        last = current
+        prev = current
         while current.next_node:
             current = current.next_node
             if current.data == item:
                 break
-            last = current
+            prev = current
         else:
             return
-        last.next_node = current.clear()
+        prev.next_node = current.clear()
         self.count -= 1
 
     def __iter__(self):
-        self._curr_node = self.head
+        self._curr_node = self.head.next_node
         return self
 
     def __next__(self):
@@ -129,6 +121,7 @@ def main():
     ll.add(3)
     ll.add(2)
     print(ll, len(ll))
+    ll.remove(None)
     ll.remove("l")
     ll.remove(1)
     print(ll, len(ll), 1 in ll, 3 in ll)
