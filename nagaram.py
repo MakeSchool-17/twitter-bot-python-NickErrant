@@ -1,4 +1,4 @@
-class Anagram_Dict():
+class Anagram_Dict:
 
     def __init__(self, dict_file):
         self.index = 0
